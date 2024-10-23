@@ -1,0 +1,40 @@
+version: '3'
+services:
+  selenium:
+    image: selenium/standalone-firefox:4.25.0-20241010
+    ports:
+      - "4444:4444"
+    shm_size: 2g
+    networks:
+      - selenium-network
+    deploy:
+      resources:
+        limits:
+          memory: 40GB
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  python:
+    depends_on:
+      selenium:
+        condition: service_healthy  # wait for selenium to be ready
+    image: python:3.10
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: >
+      sh -c "pip install -r requirements.txt && tail -f /dev/null"
+    networks:
+      - selenium-network
+    deploy:
+      resources:
+        limits:
+          memory: 2GB
+
+networks:
+  selenium-network:
+    driver: bridge
