@@ -28,7 +28,12 @@ read_analyzed_post_ids()
 
 
 def analyze_post(category: str, post: WebElement):
-    title_elem = post.find_element(By.CSS_SELECTOR, "h2 > a")
+    try:
+        title_elem = post.find_element(By.CSS_SELECTOR, "h2 > a")
+    except Exception as e:
+        # NSFW, skip
+        return
+
     id_str = title_elem.get_attribute("href").split("/i/")[-1]
     id = "imgflip-post-" + id_str
 
