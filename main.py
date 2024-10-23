@@ -112,7 +112,7 @@ def main():
             print(e)
 
 driver = webdriver.Remote(
-    command_executor="http://host.docker.internal:4444/wd/hub",
+    command_executor="http://host.docker.internal:4445/wd/hub",
     options=firefox_options,
 )
 # use local firefox
