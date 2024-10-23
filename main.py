@@ -67,7 +67,6 @@ def analyze_post(category: str, post: WebElement):
 
 
 def analyze_page(category: str, page_number: int):
-    print(f"Analyzing template {category} page {page_number}")
     driver.get(f"https://imgflip.com{category}?page={page_number}&sort=top-365d")
     elements = driver.find_elements(By.CSS_SELECTOR, "#page > #base-left > .base-unit")
     for element in elements:
@@ -97,19 +96,23 @@ def main():
             print(categories)
 
             for category in categories:
-                try:
-                    print(f"Analyzing template {category}")
-                    for i in range(1, 11):
+                print(f"Analyzing template {category}")
+                for i in range(1, 11):
+                    print(f"Analyzing template {category} page {i}")
+                    try:
                         analyze_page(category, i)
-                except KeyboardInterrupt:
-                    raise
-                except Exception as e:
-                    print(e)
-                time.sleep(10)
+                    except KeyboardInterrupt:
+                        raise
+                    except Exception as e:
+                        print(e)
+                        print(f"Sleeping for 10 seconds")
+                        time.sleep(10)
+                    time.sleep(1)
         except KeyboardInterrupt:
             return
         except Exception as e:
             print(e)
+
 
 driver = webdriver.Remote(
     command_executor="http://host.docker.internal:4445/wd/hub",
